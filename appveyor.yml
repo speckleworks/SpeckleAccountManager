@@ -1,4 +1,4 @@
-version: 1.5.0.{build}-beta
+version: 1.5.1-beta.{build}
 image: Visual Studio 2017
 before_build:
 - cmd: >-
