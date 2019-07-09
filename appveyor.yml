@@ -11,7 +11,7 @@ assembly_info:
   assembly_file_version: '{version}'
 build:
   publish_nuget: true
-  project: SpeckleCore/SpeckleCore.sln
+  project: SpecklePopup.sln
   verbosity: minimal
 deploy:
   provider: NuGet
