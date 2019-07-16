@@ -1,5 +1,5 @@
 version: 1.5.1.{build}
-image: Visual Studio 2017
+image: Visual Studio 2019
 before_build:
 - cmd: >-
     nuget restore
@@ -12,6 +12,7 @@ assembly_info:
 build:
   publish_nuget: true
   publish_nuget_symbols: true
+  use_snupkg_format: true
   project: SpecklePopup.sln
   verbosity: minimal
 deploy:
@@ -21,7 +22,6 @@ deploy:
     secure: n4EiHDLVSLjOzqT7OOOg3US3PWs6fNsOaGpyT/EFBKrTKl/1wMmmKt73MNuTngD+
   skip_symbols: false
   symbol_server:           # remove to push symbols to SymbolSource.org
-  artifact: /.*\.nupkg/
   on:
     branch: nuget
 notifications:
@@ -33,3 +33,5 @@ notifications:
   on_build_success: false
   on_build_failure: true
   on_build_status_changed: true
+ configuration:
+  - Release
