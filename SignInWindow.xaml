@@ -5,53 +5,73 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SpecklePopup"
         mc:Ignorable="d"
-        Title="Speckle SignIn" Height="524" Width="500" MinWidth="500" MinHeight="400" HorizontalAlignment="Center" AutomationProperties.Name="Speckle SignIn">
+        Title="Speckle SignIn" Height="574" Width="500" MinWidth="500" MinHeight="400" HorizontalAlignment="Center" AutomationProperties.Name="Speckle SignIn">
+  <Window.Resources>
+    <BitmapImage x:Key="SpeckleLogo" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="\\mac\Home\Documents\dev\Speckle\SpeckleAccountManager\Resources\2xfucklogos@2x.png"/>
+
+  </Window.Resources>
   <Grid Margin="0">
-    <Button Content="Sign In" Click="Button_Click" HorizontalAlignment="Center" Margin="48,423,48,0" VerticalAlignment="Top" Width="396" Height="46" FontSize="16" Background="#FF0074FF" Foreground="White" BorderBrush="#00707070"/>
-    <TextBox HorizontalAlignment="Center" Height="24" Margin="48,394,48,0" TextWrapping="Wrap" Text="Server Url" VerticalAlignment="Top" Width="396" FontSize="16" TextAlignment="Center"/>
-    <ListBox
-      x:Name="AccountListBox"
-      Width="396"
-      Height="208"
-      Margin="0,85,0,0"
-      HorizontalAlignment="Center"
-      VerticalAlignment="Top"
-      ItemsSource="{Binding}"
-      MouseDoubleClick="AccountListBox_MouseDoubleClick"
-      SelectedIndex="0" BorderBrush="#00ABADB3">
-      <ListBox.ItemTemplate>
-        <DataTemplate>
-          <StackPanel>
-            <TextBlock FontSize="14" Text="{Binding RestApi}" />
-            <TextBlock
-              FontSize="10"
-              Foreground="DimGray"
-              Text="{Binding Email}" />
-            <TextBlock
-              FontSize="10"
-              Foreground="DimGray"
-              Text="----------------" />
-            <StackPanel Orientation="Horizontal">
+    <Grid Margin="48,114,48,35">
+      <Button Content="Sign In" Click="Button_Click" HorizontalAlignment="Center" Margin="0,348,0,0" VerticalAlignment="Top" Width="396" Height="46" FontSize="16" Background="#FF0074FF" Foreground="White" BorderBrush="#00707070"/>
+      <TextBox 
+        Name="serverUrlButton"
+        HorizontalAlignment="Center"
+        Height="24" 
+        Margin="0,314,0,0" 
+        TextWrapping="Wrap" 
+        Text="{Binding defaultServer, Mode=TwoWay, ValidatesOnNotifyDataErrors=False}" 
+        VerticalAlignment="Top" 
+        Width="396" 
+        FontSize="16" 
+        TextAlignment="Center"/>
+      <ListBox
+        x:Name="AccountListBox"
+        Width="396"
+        Height="179"
+        Margin="0,44,0,0"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Top"
+        ItemsSource="{Binding}"
+        MouseDoubleClick="AccountListBox_MouseDoubleClick"
+        SelectedIndex="0" BorderBrush="#00ABADB3">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <StackPanel>
+              <TextBlock FontSize="14" Text="{Binding RestApi}" />
               <TextBlock
                 FontSize="10"
                 Foreground="DimGray"
-                Text="{Binding ServerName}" />
-              <RadioButton
-                Margin="5,0"
-                VerticalAlignment="Center"
-                Click="RadioButton_Click"
-                Content="default"
+                Text="{Binding Email}" />
+              <TextBlock
                 FontSize="10"
                 Foreground="DimGray"
-                GroupName="IsDefault"
-                IsChecked="{Binding IsDefault}" />
+                Text="----------------" />
+              <StackPanel Orientation="Horizontal">
+                <TextBlock
+                  FontSize="10"
+                  Foreground="DimGray"
+                  Text="{Binding ServerName}" />
+                <RadioButton
+                  Margin="5,0"
+                  VerticalAlignment="Center"
+                  Click="RadioButton_Click"
+                  Content="default"
+                  FontSize="10"
+                  Foreground="DimGray"
+                  GroupName="IsDefault"
+                  IsChecked="{Binding IsDefault}" />
+              </StackPanel>
             </StackPanel>
-          </StackPanel>
-        </DataTemplate>
-      </ListBox.ItemTemplate>
-    </ListBox>
-    <Label Content="Existing Accounts" HorizontalAlignment="Center" Margin="48,32,48,0" VerticalAlignment="Top" Width="396" FontSize="22"/>
-    <Label Content="New Account" HorizontalAlignment="Center" Margin="48,338,48,0" VerticalAlignment="Top" Width="396" FontSize="22"/>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+      <Label Content="Existing Accounts" HorizontalAlignment="Center" VerticalAlignment="Top" Width="396" FontSize="22"/>
+      <Label Content="New Account" HorizontalAlignment="Center" Margin="0,244,0,0" VerticalAlignment="Top" Width="396" FontSize="22"/>
+      <Label Content="Input below the server url you want to log in or register at. Remember, it needs to be&#xD;&#xA;a valid url, ie: https://dev.hestia.speckle.works." HorizontalAlignment="Center" Margin="0,275,0,0" VerticalAlignment="Top" Width="396" FontSize="10" Height="39" Foreground="Gray"/>
+    </Grid>
+    <Image HorizontalAlignment="Left" Height="39" Margin="48,37,0,0" VerticalAlignment="Top" Width="44" Source="{DynamicResource SpeckleLogo}"/>
+    <Label Content="Speckle" HorizontalAlignment="Center" Margin="105,16,68,0" VerticalAlignment="Top" Width="319" FontSize="36" FontFamily="Segoe UI Light" Height="55"/>
+    <Label Content="the open source data platform for AEC." HorizontalAlignment="Center" Margin="105,60,78,0" VerticalAlignment="Top" Width="309" FontSize="10" Height="24" Foreground="Gray"/>
 
   </Grid>
 </Window>

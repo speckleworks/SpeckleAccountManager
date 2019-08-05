@@ -23,20 +23,15 @@ namespace SpecklePopup
   /// </summary>
   public partial class SignInWindow : Window
   {
-
-    private string defaultServer = "https://dev.hestia.speckle.works";
-    private List<string> existingServers = new List<string>();
-    private List<string> existingServers_fullDetails = new List<string>();
+    public string defaultServer { get; set; } = "https://dev.hestia.speckle.works";
     internal ObservableCollection<Account> accounts = new ObservableCollection<Account>();
-    private bool validationCheckPass = false;
-    private Uri ServerAddress;
-    private string email;
-    private string password;
-    private string serverName;
     public string restApi;
     public string apitoken;
 
+    public bool isInRequestFlow = false;
+
     Process browser;
+    HttpListener listener;
 
     public SignInWindow( )
     {
@@ -80,42 +75,62 @@ namespace SpecklePopup
 
     private void Button_Click( object sender, RoutedEventArgs e )
     {
-      browser = Process.Start( "https://dev.hestia.speckle.works/signin?redirectUrl=http://localhost:5050" );
-      InstantiateWebServer();
+      Task.Run( ( ) =>
+      {
+        //browser = Process.Start( "https://dev.hestia.speckle.works/signin?redirectUrl=http://localhost:5050" );
+        browser = Process.Start( this.defaultServer + "/signin?redirectUrl=http://localhost:5050" );
+        isInRequestFlow = true;
+
+        InstantiateWebServer();
+      } ); //NOTE: lookup cancellation tokens and the like
     }
 
     private void InstantiateWebServer( )
     {
-      HttpListener listener = new HttpListener();
-      listener.Prefixes.Add( "http://localhost:5050/" );
-      listener.Start();
-
-      var ctx = listener.GetContext();
-      var req = ctx.Request;
-      listener.Stop();
-
+      if ( listener != null )
+      {
+        listener.Abort();
+      }
       try
       {
-        browser.CloseMainWindow();
-        browser.Close();
+        listener = new HttpListener();
+        listener.Prefixes.Add( "http://localhost:5050/" );
+        listener.Start();
+
+        var ctx = listener.GetContext();
+        var req = ctx.Request;
+        listener.Stop();
+
+        try
+        {
+          browser.CloseMainWindow();
+          browser.Close();
+        }
+        catch ( Exception e )
+        {
+          Debug.WriteLine( e );
+        }
+        var myString = Uri.UnescapeDataString( ctx.Request.Url.Query );
+
+        Debug.WriteLine( myString );
+        var splitRes = myString.Replace( "?token=", "" ).Split( new[ ] { ":::" }, StringSplitOptions.None );
+        var token = splitRes[ 0 ];
+        var serverUrl = splitRes[ 1 ];
+
+        var apiCl = new SpeckleApiClient( serverUrl + "/api" ) { AuthToken = token };
+        var res = apiCl.UserGetAsync().Result;
+
+        var apiToken = res.Resource.Apitoken;
+        var email = res.Resource.Email;
+        MessageBox.Show( String.Format( "Hello, {0}! You've signed-in succesfully with your NOT FAKE email {2}. Well done.", res.Resource.Name, res.Resource.Apitoken, email ) );
+
+        // TODO: try save this as a new account if it doesn't exist, update otherwise. 
+        isInRequestFlow = false;
       }
       catch ( Exception e )
       {
         Debug.WriteLine( e );
       }
-      var myString = Uri.UnescapeDataString( ctx.Request.Url.Query );
-
-      Debug.WriteLine( myString );
-      var splitRes = myString.Replace( "?token=", "" ).Split( new[ ] { ":::" }, StringSplitOptions.None );
-      var token = splitRes[ 0 ];
-      var serverUrl = splitRes[ 1 ];
-
-      var apiCl = new SpeckleApiClient( serverUrl + "/api" ) { AuthToken = token };
-      var res = apiCl.UserGetAsync().Result;
-
-      var apiToken = res.Resource.Apitoken;
-      var email = res.Resource.Email;
-      
     }
   }
 }
