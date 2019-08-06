@@ -11,11 +11,11 @@
 
   </Window.Resources>
   <Grid Margin="0">
-    <Grid Margin="48,114,48,35">
+    <Grid Margin="48,114,48,35" Visibility="Visible">
       <Button 
         IsEnabled="{Binding isCorrectUrl}" 
         Content="Sign In" 
-        Click="Button_Click" HorizontalAlignment="Center" 
+        Click="SignInClick" HorizontalAlignment="Center" 
         Margin="0,348,0,41" 
         Width="396" FontSize="16" 
         Background="#FF0074FF" Foreground="White" 
@@ -35,7 +35,7 @@
       <ListBox
         x:Name="AccountListBox"
         Width="396"
-        Height="179"
+        Height="195"
         Margin="0,44,0,0"
         HorizontalAlignment="Center"
         VerticalAlignment="Top"
@@ -44,7 +44,7 @@
         SelectedIndex="0" BorderBrush="#00ABADB3">
         <ListBox.ItemTemplate>
           <DataTemplate>
-            <StackPanel>
+            <StackPanel Margin="0,0,20,0">
               <TextBlock FontSize="14" Text="{Binding RestApi}" />
               <TextBlock
                 FontSize="10"
@@ -69,6 +69,11 @@
                   GroupName="IsDefault"
                   IsChecked="{Binding IsDefault}" />
               </StackPanel>
+              <StackPanel HorizontalAlignment="Left" Margin="0,5,0,5">
+                <Button Click="DeleteAccount" Width="70" Margin="0,0,0,0" Content="Delete" FontSize="10" ></Button>
+
+              </StackPanel>
+              
             </StackPanel>
           </DataTemplate>
         </ListBox.ItemTemplate>
@@ -77,6 +82,10 @@
       <Label Content="New Account" HorizontalAlignment="Center" Margin="0,244,0,0" VerticalAlignment="Top" Width="396" FontSize="22"/>
       <Label Content="Input below the server url you want to log in or register at. Remember, it needs to be&#xD;&#xA;a valid url, ie: https://dev.hestia.speckle.works." HorizontalAlignment="Center" Margin="0,275,0,0" VerticalAlignment="Top" Width="396" FontSize="10" Height="39" Foreground="Gray"/>
       <Label Name="ValidationLabel" Content="{Binding errorMessage, Mode=TwoWay}"  HorizontalAlignment="Center" Margin="0,398,0,0" VerticalAlignment="Top" Width="396" FontSize="10" Height="26" Foreground="Gray" Background="White"/>
+    </Grid>
+    <Grid
+      Visibility="Collapsed">
+      
     </Grid>
     <Image HorizontalAlignment="Left" Height="39" Margin="48,37,0,0" VerticalAlignment="Top" Width="44" Source="{DynamicResource SpeckleLogo}"/>
     <Label Content="Speckle" HorizontalAlignment="Center" Margin="105,16,68,0" VerticalAlignment="Top" Width="319" FontSize="36" FontFamily="Segoe UI Light" Height="55"/>

@@ -134,6 +134,13 @@ namespace SpecklePopup
       LocalContext.SetDefaultAccount( rb.DataContext as Account );
     }
 
+    private void DeleteAccount( object sender, RoutedEventArgs e )
+    {
+      var bt = sender as Button;
+      LocalContext.RemoveAccount( bt.DataContext as Account );
+      LoadAccounts();
+    }
+
     private void AccountListBox_MouseDoubleClick( object sender, MouseButtonEventArgs e )
     {
       try
@@ -148,7 +155,7 @@ namespace SpecklePopup
       //this.Close();
     }
 
-    private void Button_Click( object sender, RoutedEventArgs e )
+    private void SignInClick( object sender, RoutedEventArgs e )
     {
       Task.Run( ( ) =>
       {
@@ -205,7 +212,10 @@ namespace SpecklePopup
         var email = res.Resource.Email;
         MessageBox.Show( String.Format( "Hello, {0}! You've signed-in succesfully with your NOT FAKE email {2}. Well done.", res.Resource.Name, res.Resource.Apitoken, email ) );
 
+        this.defaultServer = "";
+
         // TODO: try save this as a new account if it doesn't exist, update otherwise. 
+
         isInRequestFlow = false;
       }
       catch ( Exception e )
