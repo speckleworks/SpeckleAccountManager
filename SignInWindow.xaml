@@ -5,25 +5,33 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SpecklePopup"
         mc:Ignorable="d"
-        Title="Speckle SignIn" Height="574" Width="500" MinWidth="500" MinHeight="400" HorizontalAlignment="Center" AutomationProperties.Name="Speckle SignIn">
+        Title="Speckle SignIn" Height="614.5" Width="500" MinWidth="500" MinHeight="400" HorizontalAlignment="Center" AutomationProperties.Name="Speckle SignIn">
   <Window.Resources>
     <BitmapImage x:Key="SpeckleLogo" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="\\mac\Home\Documents\dev\Speckle\SpeckleAccountManager\Resources\2xfucklogos@2x.png"/>
 
   </Window.Resources>
   <Grid Margin="0">
     <Grid Margin="48,114,48,35">
-      <Button Content="Sign In" Click="Button_Click" HorizontalAlignment="Center" Margin="0,348,0,0" VerticalAlignment="Top" Width="396" Height="46" FontSize="16" Background="#FF0074FF" Foreground="White" BorderBrush="#00707070"/>
+      <Button 
+        IsEnabled="{Binding isCorrectUrl}" 
+        Content="Sign In" 
+        Click="Button_Click" HorizontalAlignment="Center" 
+        Margin="0,348,0,41" 
+        Width="396" FontSize="16" 
+        Background="#FF0074FF" Foreground="White" 
+        BorderBrush="#00707070"/>
       <TextBox 
         Name="serverUrlButton"
         HorizontalAlignment="Center"
         Height="24" 
-        Margin="0,314,0,0" 
+        Margin="0,319,0,0" 
         TextWrapping="Wrap" 
-        Text="{Binding defaultServer, Mode=TwoWay, ValidatesOnNotifyDataErrors=False}" 
+        Text="{Binding defaultServer, Mode=TwoWay}" 
         VerticalAlignment="Top" 
         Width="396" 
         FontSize="16" 
-        TextAlignment="Center"/>
+        TextAlignment="Center"
+        TextChanged="serverUrlTextChanged"/>
       <ListBox
         x:Name="AccountListBox"
         Width="396"
@@ -68,6 +76,7 @@
       <Label Content="Existing Accounts" HorizontalAlignment="Center" VerticalAlignment="Top" Width="396" FontSize="22"/>
       <Label Content="New Account" HorizontalAlignment="Center" Margin="0,244,0,0" VerticalAlignment="Top" Width="396" FontSize="22"/>
       <Label Content="Input below the server url you want to log in or register at. Remember, it needs to be&#xD;&#xA;a valid url, ie: https://dev.hestia.speckle.works." HorizontalAlignment="Center" Margin="0,275,0,0" VerticalAlignment="Top" Width="396" FontSize="10" Height="39" Foreground="Gray"/>
+      <Label Name="ValidationLabel" Content="{Binding errorMessage, Mode=TwoWay}"  HorizontalAlignment="Center" Margin="0,398,0,0" VerticalAlignment="Top" Width="396" FontSize="10" Height="26" Foreground="Gray" Background="White"/>
     </Grid>
     <Image HorizontalAlignment="Left" Height="39" Margin="48,37,0,0" VerticalAlignment="Top" Width="44" Source="{DynamicResource SpeckleLogo}"/>
     <Label Content="Speckle" HorizontalAlignment="Center" Margin="105,16,68,0" VerticalAlignment="Top" Width="319" FontSize="36" FontFamily="Segoe UI Light" Height="55"/>

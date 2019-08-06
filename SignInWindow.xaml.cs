@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -21,9 +24,31 @@ namespace SpecklePopup
   /// <summary>
   /// Interaction logic for SignInWindow.xaml
   /// </summary>
-  public partial class SignInWindow : Window
+  public partial class SignInWindow : Window, INotifyPropertyChanged
   {
-    public string defaultServer { get; set; } = "https://dev.hestia.speckle.works";
+    public string _defaultServer = "https://dev.hestia.speckle.works";
+    public string defaultServer
+    {
+      get { return _defaultServer; }
+      set { _defaultServer = value; }
+    }
+
+    public bool _isCorrectUrl = true;
+    public bool isCorrectUrl
+    {
+      get { return _isCorrectUrl; }
+      set { _isCorrectUrl = value; OnPropertyChanged( "isCorrectUrl" ); }
+    }
+
+    public string _errorMessage = "Url check result.";
+    public string errorMessage
+    {
+      get { return _errorMessage; }
+      set { _errorMessage = value; OnPropertyChanged( "errorMessage" ); }
+    }
+
+    private Timer GetApiTimer;
+
     internal ObservableCollection<Account> accounts = new ObservableCollection<Account>();
     public string restApi;
     public string apitoken;
@@ -35,8 +60,58 @@ namespace SpecklePopup
 
     public SignInWindow( )
     {
+      this.DataContext = this;
+
       InitializeComponent();
       LoadAccounts();
+
+      GetApiTimer = new Timer( 500 ) { Enabled = false, AutoReset = false };
+      GetApiTimer.Elapsed += GetApiTimer_Elapsed;
+      GetApiTimer.Start();
+    }
+
+    private void GetApiTimer_Elapsed( object sender, ElapsedEventArgs e )
+    {
+      try
+      {
+        var baseUri = new Uri( defaultServer );
+        var apiUri = baseUri.Scheme + "://" + baseUri.Host;
+
+        if ( !baseUri.IsDefaultPort ) { apiUri += ":" + baseUri.Port; }
+
+        apiUri += "/api";
+
+        var request = ( HttpWebRequest ) WebRequest.Create( new Uri( apiUri ) );
+        request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+        using ( HttpWebResponse response = ( HttpWebResponse ) request.GetResponse() )
+        using ( Stream stream = response.GetResponseStream() )
+        using ( StreamReader reader = new StreamReader( stream ) )
+        {
+          var test = reader.ReadToEnd();
+          var tes2 = test;
+          if ( test.Contains( "isSpeckleServer" ) )
+          {
+            isCorrectUrl = true;
+            errorMessage = "Server url ok (got correct api response).";
+          }
+          else
+          {
+            isCorrectUrl = false;
+            errorMessage = "There seems to be no speckle server there.";
+          }
+        }
+      }
+      catch ( Exception err )
+      {
+        errorMessage = "There seems to be no speckle server there.";
+        isCorrectUrl = false;
+      }
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected virtual void OnPropertyChanged( string propertyName )
+    {
+      PropertyChanged?.Invoke( this, new PropertyChangedEventArgs( propertyName ) );
     }
 
 
@@ -78,6 +153,12 @@ namespace SpecklePopup
       Task.Run( ( ) =>
       {
         //browser = Process.Start( "https://dev.hestia.speckle.works/signin?redirectUrl=http://localhost:5050" );
+
+        var baseUri = new Uri( defaultServer );
+        var apiUri = baseUri.Scheme + "://" + baseUri.Host;
+
+        if ( !baseUri.IsDefaultPort ) { apiUri += ":" + baseUri.Port; }
+
         browser = Process.Start( this.defaultServer + "/signin?redirectUrl=http://localhost:5050" );
         isInRequestFlow = true;
 
@@ -130,6 +211,21 @@ namespace SpecklePopup
       catch ( Exception e )
       {
         Debug.WriteLine( e );
+      }
+    }
+
+    private void serverUrlTextChanged( object sender, TextChangedEventArgs e )
+    {
+      defaultServer = ( ( TextBox ) sender ).Text;
+      try
+      {
+        var testUri = new Uri( defaultServer );
+        GetApiTimer.Start();
+      }
+      catch
+      {
+        isCorrectUrl = false;
+        errorMessage = "That's not a valid url. Forgot the https:// ?";
       }
     }
   }
