@@ -12,6 +12,7 @@ assembly_info:
   assembly_informational_version: '{version}-wip'
 build:
   publish_nuget: true
+  include_nuget_references: true
   publish_nuget_symbols: true
   use_snupkg_format: true
   project: SpecklePopup.sln
