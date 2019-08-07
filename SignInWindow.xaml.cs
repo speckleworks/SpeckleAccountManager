@@ -1,4 +1,6 @@
-﻿using System;
+﻿extern alias SpeckleNewtonsoft;
+using SpeckleNewtonsoft.Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -47,6 +49,15 @@ namespace SpecklePopup
       set { _errorMessage = value; OnPropertyChanged( "errorMessage" ); }
     }
 
+    public bool _showSigninSuccess = true;
+    public bool showSigninsuccess
+    {
+      get { return _showSigninSuccess; }
+      set { _showSigninSuccess = value; showMainLogin = !value; OnPropertyChanged( "showSigninsuccess" ); OnPropertyChanged( "showMainLogin" ); }
+    }
+
+    public bool showMainLogin { get; set; } = false;
+
     private Timer GetApiTimer;
 
     internal ObservableCollection<Account> accounts = new ObservableCollection<Account>();
@@ -68,6 +79,7 @@ namespace SpecklePopup
       GetApiTimer = new Timer( 500 ) { Enabled = false, AutoReset = false };
       GetApiTimer.Elapsed += GetApiTimer_Elapsed;
       GetApiTimer.Start();
+      showSigninsuccess = true;
     }
 
     private void GetApiTimer_Elapsed( object sender, ElapsedEventArgs e )
@@ -159,8 +171,6 @@ namespace SpecklePopup
     {
       Task.Run( ( ) =>
       {
-        //browser = Process.Start( "https://dev.hestia.speckle.works/signin?redirectUrl=http://localhost:5050" );
-
         var baseUri = new Uri( defaultServer );
         var apiUri = baseUri.Scheme + "://" + baseUri.Host;
 
@@ -210,18 +220,54 @@ namespace SpecklePopup
 
         var apiToken = res.Resource.Apitoken;
         var email = res.Resource.Email;
-        MessageBox.Show( String.Format( "Hello, {0}! You've signed-in succesfully with your NOT FAKE email {2}. Well done.", res.Resource.Name, res.Resource.Apitoken, email ) );
 
-        this.defaultServer = "";
+        SaveOrUpdateAccount( new Account() { RestApi = apiCl.BaseUrl, Email = email, Token = apiToken } );
 
-        // TODO: try save this as a new account if it doesn't exist, update otherwise. 
-
-        isInRequestFlow = false;
+        Dispatcher.Invoke( ( ) =>
+        {
+          defaultServer = "";
+          showSigninsuccess = true;
+          isInRequestFlow = false;
+          LoadAccounts();
+        } );
       }
       catch ( Exception e )
       {
         Debug.WriteLine( e );
       }
+    }
+
+    public void SaveOrUpdateAccount( Account newAccount )
+    {
+      var existingAccounts = LocalContext.GetAllAccounts();
+      var newUri = new Uri( newAccount.RestApi );
+
+      var serverName = GetServerName( newUri );
+
+      foreach ( var acc in existingAccounts )
+      {
+        var eUri = new Uri( acc.RestApi );
+        if ( ( eUri.Host == newUri.Host ) && ( acc.Email == newAccount.Email ) && ( eUri.Port == newUri.Port ) )
+        {
+          acc.ServerName = serverName;
+          acc.Token = newAccount.Token;
+          LocalContext.RemoveAccount( acc ); // TODO: Add update account method, as this is rather stupid
+          LocalContext.AddAccount( acc );
+          return;
+        }
+      }
+      newAccount.ServerName = serverName;
+      LocalContext.AddAccount( newAccount );
+    }
+
+    public string GetServerName( Uri serverApi )
+    {
+      using ( var cl = new WebClient() )
+      {
+        var response = JsonConvert.DeserializeObject<dynamic>( cl.DownloadString( serverApi ) );
+        return response.serverName as string;
+      }
+      throw new Exception( "Could not get server name." );
     }
 
     private void serverUrlTextChanged( object sender, TextChangedEventArgs e )
@@ -237,6 +283,11 @@ namespace SpecklePopup
         isCorrectUrl = false;
         errorMessage = "That's not a valid url. Forgot the https:// ?";
       }
+    }
+
+    private void ReturnToMain( object sender, RoutedEventArgs e )
+    {
+      showSigninsuccess = false;
     }
   }
 }
