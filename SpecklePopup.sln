@@ -5,19 +5,42 @@ VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecklePopup", "SpecklePopup.csproj", "{D65594C8-EA2E-46CA-A756-B1634EDC3AE3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeckleAccountManagerLauncher", "SpeckleAccountManagerLauncher\SpeckleAccountManagerLauncher.csproj", "{4C6A9C59-57DB-4A29-9815-F148EEBC939A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		DebugRevit|Any CPU = DebugRevit|Any CPU
+		DebugRevit|x64 = DebugRevit|x64
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D65594C8-EA2E-46CA-A756-B1634EDC3AE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D65594C8-EA2E-46CA-A756-B1634EDC3AE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D65594C8-EA2E-46CA-A756-B1634EDC3AE3}.DebugRevit|Any CPU.ActiveCfg = DebugRevit|Any CPU
-		{D65594C8-EA2E-46CA-A756-B1634EDC3AE3}.DebugRevit|Any CPU.Build.0 = DebugRevit|Any CPU
+		{D65594C8-EA2E-46CA-A756-B1634EDC3AE3}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{D65594C8-EA2E-46CA-A756-B1634EDC3AE3}.Debug|Any CPU.Build.0 = Debug|x64
+		{D65594C8-EA2E-46CA-A756-B1634EDC3AE3}.Debug|x64.ActiveCfg = Debug|x64
+		{D65594C8-EA2E-46CA-A756-B1634EDC3AE3}.Debug|x64.Build.0 = Debug|x64
+		{D65594C8-EA2E-46CA-A756-B1634EDC3AE3}.DebugRevit|Any CPU.ActiveCfg = Debug|Any CPU
+		{D65594C8-EA2E-46CA-A756-B1634EDC3AE3}.DebugRevit|Any CPU.Build.0 = Debug|Any CPU
+		{D65594C8-EA2E-46CA-A756-B1634EDC3AE3}.DebugRevit|x64.ActiveCfg = Debug|x64
+		{D65594C8-EA2E-46CA-A756-B1634EDC3AE3}.DebugRevit|x64.Build.0 = Debug|x64
 		{D65594C8-EA2E-46CA-A756-B1634EDC3AE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D65594C8-EA2E-46CA-A756-B1634EDC3AE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D65594C8-EA2E-46CA-A756-B1634EDC3AE3}.Release|x64.ActiveCfg = Release|x64
+		{D65594C8-EA2E-46CA-A756-B1634EDC3AE3}.Release|x64.Build.0 = Release|x64
+		{4C6A9C59-57DB-4A29-9815-F148EEBC939A}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{4C6A9C59-57DB-4A29-9815-F148EEBC939A}.Debug|Any CPU.Build.0 = Debug|x64
+		{4C6A9C59-57DB-4A29-9815-F148EEBC939A}.Debug|x64.ActiveCfg = Debug|x64
+		{4C6A9C59-57DB-4A29-9815-F148EEBC939A}.Debug|x64.Build.0 = Debug|x64
+		{4C6A9C59-57DB-4A29-9815-F148EEBC939A}.DebugRevit|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C6A9C59-57DB-4A29-9815-F148EEBC939A}.DebugRevit|Any CPU.Build.0 = Debug|Any CPU
+		{4C6A9C59-57DB-4A29-9815-F148EEBC939A}.DebugRevit|x64.ActiveCfg = Debug|x64
+		{4C6A9C59-57DB-4A29-9815-F148EEBC939A}.DebugRevit|x64.Build.0 = Debug|x64
+		{4C6A9C59-57DB-4A29-9815-F148EEBC939A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C6A9C59-57DB-4A29-9815-F148EEBC939A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C6A9C59-57DB-4A29-9815-F148EEBC939A}.Release|x64.ActiveCfg = Release|x64
+		{4C6A9C59-57DB-4A29-9815-F148EEBC939A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

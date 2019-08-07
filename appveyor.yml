@@ -1,0 +1,37 @@
+version: 1.6.0.{build}-wip
+image: Visual Studio 2019
+before_build:
+- cmd: >-
+    nuget restore
+ # version
+assembly_info:
+  patch: true
+  file: AssemblyInfo.*
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+build:
+  publish_nuget: true
+  publish_nuget_symbols: true
+  use_snupkg_format: true
+  project: SpecklePopup.sln
+  verbosity: minimal
+deploy:
+  provider: NuGet
+  server:                  # remove to push to NuGet.org
+  api_key:
+    secure: n4EiHDLVSLjOzqT7OOOg3US3PWs6fNsOaGpyT/EFBKrTKl/1wMmmKt73MNuTngD+
+  skip_symbols: false
+  symbol_server:           # remove to push symbols to SymbolSource.org
+  on:
+    branch: nuget
+notifications:
+- provider: Slack
+  incoming_webhook:
+    secure: 9Kt/ImvGdsQ/dzmRdSaMIG+BO0R29MOJC7eZZnK5m5TyWwE+4nofEcYlb/r4lh9Z1Dx/bR+7oQtgAYO3W5s+qJshkT6Is9irYw3TfMZX7/M=
+  channel: '#devtalk'
+  template: Build <{{buildUrl}}|#{{buildVersion}}> (<{{commitUrl}}|{{commitId}}>) of {{repositoryName}}@{{branch}}) by {{commitAuthor}} {{status}} in {{duration}}
+  on_build_success: false
+  on_build_failure: true
+  on_build_status_changed: true
+configuration:
+  - Release
