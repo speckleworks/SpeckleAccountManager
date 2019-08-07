@@ -1,4 +1,4 @@
-version: 1.6.0.{build}-wip
+version: 1.6.1.{build}
 image: Visual Studio 2019
 before_build:
 - cmd: >-
@@ -9,6 +9,7 @@ assembly_info:
   file: AssemblyInfo.*
   assembly_version: '{version}'
   assembly_file_version: '{version}'
+  assembly_informational_version: '{version}-wip'
 build:
   publish_nuget: true
   publish_nuget_symbols: true
