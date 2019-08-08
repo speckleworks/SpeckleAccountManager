@@ -28,39 +28,63 @@ namespace SpecklePopup
   /// </summary>
   public partial class SignInWindow : Window, INotifyPropertyChanged
   {
-    public string _defaultServer = "https://dev.hestia.speckle.works";
+    private string _defaultServer = "https://dev.hestia.speckle.works";
     public string defaultServer
     {
       get { return _defaultServer; }
       set { _defaultServer = value; }
     }
 
-    public bool _isCorrectUrl = true;
+    private bool _isCorrectUrl = true;
     public bool isCorrectUrl
     {
       get { return _isCorrectUrl; }
       set { _isCorrectUrl = value; OnPropertyChanged( "isCorrectUrl" ); }
     }
 
-    public string _errorMessage = "Url check result.";
+    private string _errorMessage = "Url check result.";
     public string errorMessage
     {
       get { return _errorMessage; }
       set { _errorMessage = value; OnPropertyChanged( "errorMessage" ); }
     }
 
-    public bool _showSigninSuccess = true;
+    private bool _showSigninSuccess = false;
     public bool showSigninsuccess
     {
       get { return _showSigninSuccess; }
       set { _showSigninSuccess = value; showMainLogin = !value; OnPropertyChanged( "showSigninsuccess" ); OnPropertyChanged( "showMainLogin" ); }
     }
 
-    public bool showMainLogin { get; set; } = false;
+    private bool _hasAccounts = false;
+    public bool hasAccounts
+    {
+      get { return accounts.Any(); }
+      set { _hasAccounts = value; }
+    }
+
+    private bool _hasMultipleAccounts = false;
+    public bool hasMultipleAccounts
+    {
+      get { return accounts.Count>1; }
+      set { _hasMultipleAccounts = value; }
+    }
+
+
+    public bool showMainLogin { get; set; } = true;
 
     private Timer GetApiTimer;
 
-    internal ObservableCollection<Account> accounts = new ObservableCollection<Account>();
+    private ObservableCollection<Account> _accounts = new ObservableCollection<Account>();
+    public ObservableCollection<Account> accounts
+    {
+      get { return _accounts; }
+      set {
+        _accounts = value; OnPropertyChanged("accounts");
+      }
+    }
+
+
     public string restApi;
     public string apitoken;
 
@@ -69,17 +93,31 @@ namespace SpecklePopup
     Process browser;
     HttpListener listener;
 
-    public SignInWindow( )
+    //true if it's a popup wind0w. it will close automatically after selecting an account
+    bool _isPopup;
+
+    public SignInWindow(bool isPopup = false )
     {
       this.DataContext = this;
 
+      _isPopup = isPopup;
+
       InitializeComponent();
+      accounts.CollectionChanged += Accounts_CollectionChanged;
+
       LoadAccounts();
 
       GetApiTimer = new Timer( 500 ) { Enabled = false, AutoReset = false };
       GetApiTimer.Elapsed += GetApiTimer_Elapsed;
       GetApiTimer.Start();
-      showSigninsuccess = true;
+
+     
+    }
+
+    private void Accounts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+      OnPropertyChanged("hasAccounts");
+      OnPropertyChanged("hasMultipleAccounts");
     }
 
     private void GetApiTimer_Elapsed( object sender, ElapsedEventArgs e )
@@ -129,13 +167,17 @@ namespace SpecklePopup
 
     private void LoadAccounts( )
     {
-      accounts = new ObservableCollection<Account>( LocalContext.GetAllAccounts() );
-      AccountListBox.ItemsSource = accounts;
+      var acc = LocalContext.GetAllAccounts();
+      accounts.Clear();
+      foreach (var a in acc)
+      {
+        accounts.Add(a);
+      }
 
       if ( accounts.Any( x => x.IsDefault ) )
       {
         int index = accounts.Select( ( v, i ) => new { acc = v, index = i } ).First( x => x.acc.IsDefault ).index;
-        AccountListBox.SelectedIndex = index;
+        defaultAccountBox.SelectedIndex = index;
       }
     }
 
@@ -144,13 +186,6 @@ namespace SpecklePopup
     {
       var rb = sender as RadioButton;
       LocalContext.SetDefaultAccount( rb.DataContext as Account );
-    }
-
-    private void DeleteAccount( object sender, RoutedEventArgs e )
-    {
-      var bt = sender as Button;
-      LocalContext.RemoveAccount( bt.DataContext as Account );
-      LoadAccounts();
     }
 
     private void AccountListBox_MouseDoubleClick( object sender, MouseButtonEventArgs e )
@@ -288,6 +323,45 @@ namespace SpecklePopup
     private void ReturnToMain( object sender, RoutedEventArgs e )
     {
       showSigninsuccess = false;
+    }
+
+    private void ClearDefaultAccount(object sender, RoutedEventArgs e)
+    {
+      defaultAccountBox.SelectedIndex = -1;
+      LocalContext.ClearDefaultAccount();
+
+    }
+
+    private void RemoveAccount_Executed(object sender, ExecutedRoutedEventArgs e)
+    {
+      var a = e.Parameter as Account;
+      if (MessageBox.Show($"Are you sure you want to remove '{a.Email}' on '{a.ServerName}' from this machine?", "Remove account?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+      {
+        if (a.IsDefault)
+        {
+          ClearDefaultAccount(null, null);
+        }
+        LocalContext.RemoveAccount(a);
+        accounts.Remove(a);
+      }
+   
+      
+    }
+
+    private void DefaultAccountBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      if (defaultAccountBox.SelectedIndex != -1)
+      {
+        LocalContext.SetDefaultAccount(accounts[defaultAccountBox.SelectedIndex]);
+      }
+    }
+
+    private void AccountListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      if(AccountListBox.SelectedIndex !=-1)
+      {
+        this.Close();
+      }
     }
   }
 }

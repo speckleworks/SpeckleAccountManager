@@ -118,9 +118,13 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands.cs" />
+    <Compile Include="DesignData\Accouts.cs" />
+    <Compile Include="DesignData\SampleAccounts.cs" />
     <Compile Include="SignInWindow.xaml.cs">
       <DependentUpon>SignInWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValueConverters\BoolToCollapsed.cs" />
     <Page Include="AccountsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -136,6 +140,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <DesignData Include="DesignData\SampleAccouts.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </DesignData>
     <Page Include="SignInWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -187,11 +195,20 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="SpeckleCore">
-      <Version>1.5.1.326</Version>
+      <Version>1.5.1.341</Version>
     </PackageReference>
     <PackageReference Include="sqlite-net-pcl">
       <Version>1.5.231</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\speckle39x44.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\speckle60x50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\speckle.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
