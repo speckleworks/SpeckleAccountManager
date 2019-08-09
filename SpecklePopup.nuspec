@@ -15,7 +15,7 @@
     <copyright>$copyright$</copyright>
     <tags>speckle popup accountmanager account</tags>
     <dependencies>
-      <dependency id="SpeckleCore" version="1.5.0.326" />
+      <dependency id="SpeckleCore" version="1.5.2" />
     </dependencies>
   </metadata>
 </package>

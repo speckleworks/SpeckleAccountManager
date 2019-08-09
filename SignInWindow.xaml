@@ -196,12 +196,13 @@
           Grid.Row="1"
           VerticalAlignment="Top"
           HorizontalContentAlignment="Stretch"
-          SelectionChanged="AccountListBox_SelectionChanged"
+          x:FieldModifier="public"
           BorderThickness="0"
           ItemTemplate="{StaticResource SpeckleAccountTemplate}"
           ItemsSource="{Binding accounts}"
           MouseDoubleClick="AccountListBox_MouseDoubleClick"
-          ScrollViewer.CanContentScroll="False" />
+          ScrollViewer.CanContentScroll="False"
+          SelectionChanged="AccountListBox_SelectionChanged" />
       </Grid>
       <!--  NEW ACCOUNT  -->
       <StackPanel Grid.Row="2">
