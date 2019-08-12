@@ -44,11 +44,14 @@ artifacts:
 
 deploy:
   - provider: GitHub
+    release: SpeckleAccountManager-$(APPVEYOR_BUILD_VERSION)
     tag: $(APPVEYOR_REPO_TAG_NAME)
     auth_token:
       secure: D5tPFvdQMg9sIe0sSvQjEWw4KAdOk1jyxNwiH5qP5DpDmUH6n6NgTdA+56vXS1Pe
     artifact: SpeckleAccountManager
     description: ''
+    draft: false
+    prerelease: false
     force_update: true
     on:              
       appveyor_repo_tag: true
