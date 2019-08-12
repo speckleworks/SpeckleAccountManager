@@ -25,6 +25,7 @@ assembly_info:
   assembly_version: '{version}'
   assembly_file_version: '{version}'
   assembly_informational_version: '{version}'
+
 build:
   publish_nuget: true
   include_nuget_references: true
@@ -32,15 +33,27 @@ build:
   use_snupkg_format: true
   project: SpecklePopup.sln
   verbosity: minimal
+
+afterbuild:
+   - 7z a -tzip -r SpeckleAccountManager.zip "%APPVEYOR_BUILD_FOLDER%\Release\*"
 deploy:
-  provider: NuGet
-  server:                  # remove to push to NuGet.org
-  api_key:
-    secure: n4EiHDLVSLjOzqT7OOOg3US3PWs6fNsOaGpyT/EFBKrTKl/1wMmmKt73MNuTngD+
-  skip_symbols: false
-  symbol_server:           # remove to push symbols to SymbolSource.org
-  on:
-    branch: nuget
+  - provider: GitHub
+    release: SpeckleAccountManager-v$(APPVEYOR_REPO_TAG_NAME)
+    tag: $(APPVEYOR_REPO_TAG_NAME)
+    auth_token:
+      secure: D5tPFvdQMg9sIe0sSvQjEWw4KAdOk1jyxNwiH5qP5DpDmUH6n6NgTdA+56vXS1Pe
+    artifact: SpeckleAccountManager.zip
+    on:              
+      appveyor_repo_tag: true
+  - provider: NuGet
+    server:                  # remove to push to NuGet.org
+    api_key:
+      secure: n4EiHDLVSLjOzqT7OOOg3US3PWs6fNsOaGpyT/EFBKrTKl/1wMmmKt73MNuTngD+
+    skip_symbols: false
+    symbol_server:           # remove to push symbols to SymbolSource.org
+    on:
+      APPVEYOR_REPO_TAG: true
+
 notifications:
 - provider: Slack
   incoming_webhook:
@@ -50,5 +63,6 @@ notifications:
   on_build_success: false
   on_build_failure: true
   on_build_status_changed: true
+
 configuration:
   - Release
