@@ -13,8 +13,7 @@ init:
         $tag = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].tag_name
         Update-AppveyorBuild -Version "$tag.$Env:APPVEYOR_BUILD_VERSION-wip"
       }
-      Write-Host "Hello. Build version is:"
-      Write-Host %APPVEYOR_BUILD_VERSION%
+      Write-Host "Hello. Build version is: $Env.APPVEYOR_BUILD_VERSION"
 
 before_build:
 - cmd: >-
@@ -25,7 +24,7 @@ assembly_info:
   file: AssemblyInfo.*
   assembly_version: '{version}'
   assembly_file_version: '{version}'
-  assembly_informational_version: '{version}-wip'
+  assembly_informational_version: '{version}'
 build:
   publish_nuget: true
   include_nuget_references: true
