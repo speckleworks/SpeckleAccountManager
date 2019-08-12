@@ -32,7 +32,7 @@ namespace SpecklePopup
     public string defaultServer
     {
       get { return _defaultServer; }
-      set { _defaultServer = value; }
+      set { _defaultServer = value; OnPropertyChanged( "defaultServer" ); }
     }
 
     private bool _isCorrectUrl = true;
@@ -215,7 +215,7 @@ namespace SpecklePopup
         isInRequestFlow = true;
 
         InstantiateWebServer();
-      } ); //NOTE: lookup cancellation tokens and the like
+      } );
     }
 
     private void InstantiateWebServer( )
@@ -245,7 +245,6 @@ namespace SpecklePopup
         }
         var myString = Uri.UnescapeDataString( ctx.Request.Url.Query );
 
-        Debug.WriteLine( myString );
         var splitRes = myString.Replace( "?token=", "" ).Split( new[ ] { ":::" }, StringSplitOptions.None );
         var token = splitRes[ 0 ];
         var serverUrl = splitRes[ 1 ];
@@ -300,7 +299,7 @@ namespace SpecklePopup
       using ( var cl = new WebClient() )
       {
         var response = JsonConvert.DeserializeObject<dynamic>( cl.DownloadString( serverApi ) );
-        return response.serverName as string;
+        return Convert.ToString(response.serverName);
       }
       throw new Exception( "Could not get server name." );
     }
@@ -316,7 +315,7 @@ namespace SpecklePopup
       catch
       {
         isCorrectUrl = false;
-        errorMessage = "That's not a valid url. Forgot the https:// ?";
+        errorMessage = @"That's not a valid url. Forgot the 'https://' ?";
       }
     }
 
@@ -344,8 +343,6 @@ namespace SpecklePopup
         LocalContext.RemoveAccount(a);
         accounts.Remove(a);
       }
-   
-      
     }
 
     private void DefaultAccountBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
