@@ -11,7 +11,8 @@ init:
       {
         $releases = "https://api.github.com/repos/$env:APPVEYOR_REPO_NAME/releases"
         $tag = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].tag_name
-        Update-AppveyorBuild -Version "$tag.$Env:APPVEYOR_BUILD_VERSION-wip"
+        $spl = $tag.Split("-")
+        Update-AppveyorBuild -Version "$spl[0].$Env:APPVEYOR_BUILD_VERSION-wip"
       }
       Write-Host "Hello. Build version is: $Env:APPVEYOR_BUILD_VERSION"
 
@@ -34,7 +35,7 @@ build:
   project: SpecklePopup.sln
   verbosity: minimal
 
-afterbuild:
+after_build:
    - 7z a -tzip -r SpeckleAccountManager.zip "%APPVEYOR_BUILD_FOLDER%\Release\*"
 deploy:
   - provider: GitHub
@@ -52,7 +53,7 @@ deploy:
     skip_symbols: false
     symbol_server:           # remove to push symbols to SymbolSource.org
     on:
-      APPVEYOR_REPO_TAG: true
+      appveyor_repo_tag: true
 
 notifications:
 - provider: Slack
