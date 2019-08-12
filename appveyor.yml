@@ -36,7 +36,7 @@ build:
   verbosity: minimal
 
 after_build:
-   - 7z a -tzip -r SpeckleAccountManager.zip "%APPVEYOR_BUILD_FOLDER%\Release\*"
+   - 7z a -tzip -r SpeckleAccountManager.zip "%APPVEYOR_BUILD_FOLDER%\SpeckleAccountLauncher\SpeckleAccountManagerLauncher\bin\Release\*"
 deploy:
   - provider: GitHub
     release: SpeckleAccountManager-v$(APPVEYOR_REPO_TAG_NAME)
