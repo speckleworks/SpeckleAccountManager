@@ -32,7 +32,7 @@ namespace SpecklePopup
     public string defaultServer
     {
       get { return _defaultServer; }
-      set { _defaultServer = value; }
+      set { _defaultServer = value; OnPropertyChanged( "defaultServer" ); }
     }
 
     private bool _isCorrectUrl = true;
@@ -300,7 +300,7 @@ namespace SpecklePopup
       using ( var cl = new WebClient() )
       {
         var response = JsonConvert.DeserializeObject<dynamic>( cl.DownloadString( serverApi ) );
-        return response.serverName as string;
+        return Convert.ToString(response.serverName);
       }
       throw new Exception( "Could not get server name." );
     }
