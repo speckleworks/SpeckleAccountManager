@@ -28,7 +28,10 @@ namespace SpecklePopup
   /// </summary>
   public partial class SignInWindow : Window, INotifyPropertyChanged
   {
+#if Debug
     private string _defaultServer = "https://dev.hestia.speckle.works";
+#endif
+    private string _defaultServer = "https://hestia.speckle.works";
     public string defaultServer
     {
       get { return _defaultServer; }
