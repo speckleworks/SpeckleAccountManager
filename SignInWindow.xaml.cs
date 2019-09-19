@@ -76,7 +76,10 @@ namespace SpecklePopup
 
     public bool showMainLogin { get; set; } = true;
 
-    private Timer GetApiTimer;
+    private DebounceDispatcher debounceTimer = new DebounceDispatcher();
+
+    private string _apiUri { get; set; }
+    private string _serverUri { get; set; }
 
     private ObservableCollection<Account> _accounts = new ObservableCollection<Account>();
     public ObservableCollection<Account> accounts
@@ -110,12 +113,6 @@ namespace SpecklePopup
       accounts.CollectionChanged += Accounts_CollectionChanged;
 
       LoadAccounts();
-
-      GetApiTimer = new Timer(500) { Enabled = false, AutoReset = false };
-      GetApiTimer.Elapsed += GetApiTimer_Elapsed;
-      GetApiTimer.Start();
-
-
     }
 
     private void Accounts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -124,20 +121,30 @@ namespace SpecklePopup
       OnPropertyChanged("hasMultipleAccounts");
     }
 
-    private void GetApiTimer_Elapsed(object sender, ElapsedEventArgs e)
+    private async Task CheckServerUrl(string url)
     {
+      Uri baseUri;
+      bool result = Uri.TryCreate(url, UriKind.Absolute, out baseUri)
+          && (baseUri.Scheme == Uri.UriSchemeHttp || baseUri.Scheme == Uri.UriSchemeHttps);
+
+      if (!result)
+      {
+        isCorrectUrl = false;
+        errorMessage = @"Hey, that's not a valid url!";
+        return;
+      }
+
       try
       {
-        var baseUri = new Uri(defaultServer);
-        var apiUri = baseUri.Scheme + "://" + baseUri.Host;
+        _serverUri = baseUri.Scheme + "://" + baseUri.Host;
 
-        if (!baseUri.IsDefaultPort) { apiUri += ":" + baseUri.Port; }
+        if (!baseUri.IsDefaultPort) { _serverUri += ":" + baseUri.Port; }
 
-        apiUri += "/api";
+        _apiUri = _serverUri + "/api";
 
-        var request = (HttpWebRequest)WebRequest.Create(new Uri(apiUri));
+        var request = (HttpWebRequest)WebRequest.Create(new Uri(_apiUri));
         request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-        using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+        using (HttpWebResponse response = (HttpWebResponse) await request.GetResponseAsync())
         using (Stream stream = response.GetResponseStream())
         using (StreamReader reader = new StreamReader(stream))
         {
@@ -210,12 +217,7 @@ namespace SpecklePopup
     {
       Task.Run(() =>
      {
-       var baseUri = new Uri(defaultServer);
-       var apiUri = baseUri.Scheme + "://" + baseUri.Host;
-
-       if (!baseUri.IsDefaultPort) { apiUri += ":" + baseUri.Port; }
-
-       browser = Process.Start(this.defaultServer + "/signin?redirectUrl=http://localhost:5050");
+       browser = Process.Start(_serverUri + "/signin?redirectUrl=http://localhost:5050");
        isInRequestFlow = true;
 
        InstantiateWebServer();
@@ -265,9 +267,9 @@ namespace SpecklePopup
 
       var splitRes = myString.Replace("?token=", "").Split(new[] { ":::" }, StringSplitOptions.None);
       var token = splitRes[0];
-      var serverUrl = splitRes[1];
+      //var serverUrl = splitRes[1];
 
-      var apiCl = new SpeckleApiClient(serverUrl + "/api") { AuthToken = token };
+      var apiCl = new SpeckleApiClient(_apiUri) { AuthToken = token };
       var res = apiCl.UserGetAsync().Result;
 
       var apiToken = res.Resource.Apitoken;
@@ -319,17 +321,8 @@ namespace SpecklePopup
 
     private void serverUrlTextChanged(object sender, TextChangedEventArgs e)
     {
-      defaultServer = ((TextBox)sender).Text;
-      try
-      {
-        var testUri = new Uri(defaultServer);
-        GetApiTimer.Start();
-      }
-      catch
-      {
-        isCorrectUrl = false;
-        errorMessage = @"That's not a valid url. Forgot the 'https://' ?";
-      }
+      var tb = ((TextBox)sender);
+      debounceTimer.Debounce(200, async parm => await CheckServerUrl(tb.Text), disp: tb.Dispatcher, priority: System.Windows.Threading.DispatcherPriority.Background);
     }
 
     private void ReturnToMain(object sender, RoutedEventArgs e)
