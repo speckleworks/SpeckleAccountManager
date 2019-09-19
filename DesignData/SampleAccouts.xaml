@@ -1,0 +1,24 @@
+﻿<spk:SampleAccounts
+  xmlns="clr-namespace:SpecklePopup"
+  xmlns:spk="clr-namespace:SpecklePopup.DesignData"
+  xmlns:spkc="clr-namespace:SpeckleCore;assembly=SpeckleCore"
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  defaultServer="bla bla bla">
+  <spk:SampleAccounts.accounts>
+    <spkc:Account
+      Email="sample@sample.com"
+      RestApi="https://spockle.com/api"
+      ServerName="Hestia" />
+    <spkc:Account
+      Email="name@domain.com"
+      RestApi="https://spickle.com/api"
+      ServerName="Company" />
+    <spkc:Account
+      Email="john@extremecad.com"
+      RestApi="https://spuckle.extremecad.com/api"
+      ServerName="ExtremeCAD Spuckle" />
+  </spk:SampleAccounts.accounts>
+</spk:SampleAccounts>
+
+
+
