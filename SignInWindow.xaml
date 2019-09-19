@@ -215,18 +215,18 @@
         <TextBlock
           Grid.Row="6"
           Height="39"
-          Margin="5"
+          Margin="0,5"
           HorizontalAlignment="Center"
           VerticalAlignment="Top"
           FontSize="10"
           Foreground="Gray"
-          Text="Input below the server url you want to log in or register at. Remember, it needs to be a valid url, ie: https://dev.hestia.speckle.works."
+          Text="Input below the server url you want to log in or register at. Remember, it needs to be a valid url, ie: https://hestia.speckle.works."
           TextWrapping="Wrap" />
         <TextBox
           Name="serverUrlButton"
           Grid.Row="7"
           Height="26"
-          Margin="20,5,20,0"
+          Margin="0,5,0,0"
           FontSize="16"
           Text="{Binding defaultServer, Mode=TwoWay}"
           TextAlignment="Center"
@@ -245,7 +245,7 @@
         <Button
           Grid.Row="9"
           Height="45"
-          Margin="20,0,20,20"
+          Margin="0,0,0,0"
           HorizontalAlignment="Stretch"
           Background="#FF0074FF"
           Click="SignInClick"
@@ -253,6 +253,18 @@
           FontSize="16"
           Foreground="White"
           IsEnabled="{Binding isCorrectUrl}" />
+        <TextBlock
+          Margin="5,10,5,5"
+          FontSize="10"
+          Foreground="Gray"
+          TextWrapping="Wrap">
+          Issues with the redirect?&#32;<Hyperlink
+            Click="ManuallyAddAccountClick"
+            Cursor="Hand"
+            Foreground="#FF0074FF">
+            Manually add the account
+          </Hyperlink>
+          using the connection string.</TextBlock>
       </StackPanel>
 
     </Grid>
