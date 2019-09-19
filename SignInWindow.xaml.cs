@@ -321,7 +321,7 @@ namespace SpecklePopup
 
     private void serverUrlTextChanged(object sender, TextChangedEventArgs e)
     {
-      debounceTimer.Debounce(2000, async parm =>
+      debounceTimer.Debounce(250, async parm =>
       {
         await CheckServerUrl(((TextBox)sender).Text);
       });
