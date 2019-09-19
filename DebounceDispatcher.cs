@@ -10,7 +10,6 @@ namespace SpecklePopup
   public class DebounceDispatcher
   {
     private DispatcherTimer timer;
-    private DateTime timerStarted { get; set; } = DateTime.UtcNow.AddYears(-1);
 
     public void Debounce(int interval, Action<object> action,
         object param = null,

@@ -144,7 +144,7 @@ namespace SpecklePopup
 
         var request = (HttpWebRequest)WebRequest.Create(new Uri(_apiUri));
         request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-        using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+        using (HttpWebResponse response = (HttpWebResponse) await request.GetResponseAsync())
         using (Stream stream = response.GetResponseStream())
         using (StreamReader reader = new StreamReader(stream))
         {
@@ -321,10 +321,8 @@ namespace SpecklePopup
 
     private void serverUrlTextChanged(object sender, TextChangedEventArgs e)
     {
-      debounceTimer.Debounce(250, async parm =>
-      {
-        await CheckServerUrl(((TextBox)sender).Text);
-      });
+      var tb = ((TextBox)sender);
+      debounceTimer.Debounce(200, async parm => await CheckServerUrl(tb.Text), disp: tb.Dispatcher, priority: System.Windows.Threading.DispatcherPriority.Background);
     }
 
     private void ReturnToMain(object sender, RoutedEventArgs e)
