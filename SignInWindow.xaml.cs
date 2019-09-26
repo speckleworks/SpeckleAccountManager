@@ -252,12 +252,11 @@ namespace SpecklePopup
         }
 
         AddAccountFromRedirect(ctx.Request.Url.Query);
-
-
       }
       catch (Exception e)
       {
         Debug.WriteLine(e);
+        MessageBox.Show( "Speckle had a problem adding your account; Let us know what happened. \n This is what the computer says: \n" + e.Message );
       }
     }
 
