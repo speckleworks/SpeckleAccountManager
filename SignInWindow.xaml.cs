@@ -20,7 +20,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using SpeckleCore;
-using System.Reflection;
 
 namespace SpecklePopup
 {
