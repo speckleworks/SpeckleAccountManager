@@ -102,17 +102,22 @@ namespace SpecklePopup
 
     //true if it's a popup wind0w. it will close automatically after selecting an account
     bool _isPopup;
-
+    
     public SignInWindow(bool isPopup = false)
     {
       this.DataContext = this;
-
       _isPopup = isPopup;
 
       InitializeComponent();
       accounts.CollectionChanged += Accounts_CollectionChanged;
-
+      Closing += TerminateHttpListener;
       LoadAccounts();
+    }
+
+    public void TerminateHttpListener(object sender, CancelEventArgs e)
+    {
+      if (listener != null)
+        listener.Abort();
     }
 
     private void Accounts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
