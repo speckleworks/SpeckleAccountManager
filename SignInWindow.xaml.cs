@@ -106,7 +106,6 @@ namespace SpecklePopup
     public SignInWindow(bool isPopup = false)
     {
       this.DataContext = this;
-            Title = "Hello Stam";
       _isPopup = isPopup;
 
       InitializeComponent();
